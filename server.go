@@ -1,22 +1,31 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/mux"
 )
 
-func main() {
-	router := mux.NewRouter()
+type server struct {
+	router *mux.Router
+}
 
-	server := &http.Server{
-		Handler:      router,
-		Addr:         "127.0.0.1:8000",
-		WriteTimeout: 20 * time.Second,
-		ReadTimeout:  20 * time.Second,
+func newServer(router *mux.Router) *server {
+	server := &server{
+		router: router,
 	}
+	server.routes()
+	return server
+}
 
-	log.Fatal(server.ListenAndServe())
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.router.ServeHTTP(w, r)
+}
+
+func (s *server) routes() {
+	s.router.HandleFunc("/admin/", s.handleAdmin).Methods("GET")
+}
+
+func (s *server) handleAdmin(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Admin"))
 }
