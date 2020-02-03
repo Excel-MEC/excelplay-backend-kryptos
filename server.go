@@ -9,15 +9,15 @@ import (
 func main() {
 	server := &http.Server{
 		Handler:      getRouter(),
-		Addr:         ":8000",
+		Addr:         PORT,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
 	}
 
-	logger.Println("Server starting on port 8000")
+	logger.Println("Server starting on port " + PORT)
 	err := server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		logger.Fatalln("Could not start server on port 8000")
+		logger.Fatalln("Could not start server on port " + PORT)
 	} else {
 		logger.Fatalln(err)
 	}
