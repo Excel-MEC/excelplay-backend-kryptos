@@ -1,7 +1,7 @@
 package main
 
 import (
-	"excelplay-backend/logger"
+	"excelplay-backend-kryptos/src/logger"
 	"net/http"
 	"time"
 )

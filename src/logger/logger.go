@@ -8,7 +8,7 @@ import (
 var logger *log.Logger
 
 func init() {
-	logger = log.New(os.Stdout, "excelplay-backend: ", log.LstdFlags)
+	logger = log.New(os.Stdout, "excelplay-backend-kryptos: ", log.LstdFlags)
 }
 
 // Println prints the given data on a new line
