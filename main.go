@@ -10,7 +10,7 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	logger := logrus.NewLogger()
+	logger := logrus.New()
 
 	server := &http.Server{
 		Handler:      newServer(router),
