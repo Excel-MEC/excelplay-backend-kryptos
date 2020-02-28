@@ -21,11 +21,3 @@ func newServer(router *mux.Router) *server {
 func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
-
-func (s *server) routes() {
-	s.router.HandleFunc("/admin/", s.handleAdmin).Methods("GET")
-}
-
-func (s *server) handleAdmin(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Admin"))
-}

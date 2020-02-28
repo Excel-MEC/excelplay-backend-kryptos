@@ -4,12 +4,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/logger"
+	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	router := mux.NewRouter()
+	logger := logrus.NewLogger()
+
 	server := &http.Server{
-		Handler:      getRouter(),
+		Handler:      newServer(router),
 		Addr:         PORT,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
