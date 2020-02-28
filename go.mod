@@ -1,4 +1,4 @@
-module excelplay-backend-kryptos
+module github.com/Excel-MEC/excelplay-backend-kryptos
 
 go 1.12
 

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"excelplay-backend-kryptos/src/logger"
 	"net/http"
 	"time"
+
+	"github.com/Excel-MEC/excelplay-backend-kryptos/logger"
 )
 
 func main() {
