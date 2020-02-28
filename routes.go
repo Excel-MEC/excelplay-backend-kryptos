@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Excel-MEC/excelplay-backend-kryptos/src/controllers"
+	"github.com/Excel-MEC/excelplay-backend-kryptos/controllers"
 
 	"github.com/gorilla/mux"
 )
