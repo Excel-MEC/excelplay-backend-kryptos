@@ -21,7 +21,7 @@ func newServer(router *mux.Router, db *sqlx.DB, logger *logrus.Logger) *server {
 		db,
 		logger,
 	}
-	server.routes()
+	server.routes() // Register the route handling functions with the mux router
 	return server
 }
 
