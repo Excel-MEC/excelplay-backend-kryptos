@@ -1,29 +1,50 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	router := mux.NewRouter()
+	// if any error occurs during startup, log the error and exit with status 1
+	if err := run(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
+}
+func run() error {
+	//setup logger
 	logger := logrus.New()
+	logger.Out = os.Stdout
+
+	//setup router
+	router := mux.NewRouter()
+
+	//setup the database
+	db, err := sqlx.Connect("sqlite3", ":memory:")
+	if err != nil {
+		return errors.Wrap(err, "Could not setup the db")
+	}
 
 	server := &http.Server{
-		Handler:      newServer(router),
+		Handler:      newServer(router, db, logger),
 		Addr:         PORT,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
 	}
 
-	logger.Println("Server starting on port " + PORT)
-	err := server.ListenAndServe()
+	//start server
+	logger.Info("Server starting on port " + PORT)
+	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
-		logger.Fatalln("Could not start server on port " + PORT)
-	} else {
-		logger.Fatalln(err)
+		return errors.Wrap(err, "Could not start server on port "+PORT)
 	}
+	return nil
 }
