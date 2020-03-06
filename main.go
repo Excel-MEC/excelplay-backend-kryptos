@@ -14,12 +14,12 @@ import (
 
 func main() {
 	// if any error occurs during startup, log the error and exit with status 1
-	if err := run(); err != nil {
+	if err := startup(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
 }
-func run() error {
+func startup() error {
 	//setup logger
 	logger := logrus.New()
 	logger.Out = os.Stdout
