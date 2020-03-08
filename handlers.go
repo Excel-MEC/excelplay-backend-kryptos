@@ -14,9 +14,10 @@ func (s *server) heartBeat(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) handleNextQuestion() http.HandlerFunc {
 	type response struct {
-		Question   string `json:"question"`
-		ImageLevel bool   `json:"image_level"`
-		LevelFile  string `json:"level_file"`
+		Question   string   `json:"question"`
+		ImageLevel bool     `json:"image_level"`
+		LevelFile  string   `json:"level_file"`
+		Hints      []string `json:"hints"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		// do handling
