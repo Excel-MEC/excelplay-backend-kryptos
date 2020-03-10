@@ -1,25 +1,26 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	// if any error occurs during startup, log the error and exit with status 1
-	if err := run(); err != nil {
+	if err := startup(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
 }
-func run() error {
+func startup() error {
 	//setup logger
 	logger := logrus.New()
 	logger.Out = os.Stdout
@@ -28,9 +29,17 @@ func run() error {
 	router := mux.NewRouter()
 
 	//setup the database
-	db, err := sqlx.Connect("sqlite3", ":memory:")
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
+	// db, err := sqlx.Connect("sqlite3", ":memory:")
+	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
 		return errors.Wrap(err, "Could not setup the db")
+	}
+	defer db.Close()
+	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
+	err = db.Ping()
+	if err != nil {
+		return err
 	}
 
 	server := &http.Server{

@@ -1,27 +1,27 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/sirupsen/logrus"
 
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
 )
 
 type server struct {
 	router *mux.Router
-	db     *sqlx.DB
+	db     *sql.DB
 	logger *logrus.Logger
 }
 
-func newServer(router *mux.Router, db *sqlx.DB, logger *logrus.Logger) *server {
+func newServer(router *mux.Router, db *sql.DB, logger *logrus.Logger) *server {
 	server := &server{
 		router,
 		db,
 		logger,
 	}
-	server.routes()
+	server.routes() // Register the route handling functions with the mux router
 	return server
 }
 
