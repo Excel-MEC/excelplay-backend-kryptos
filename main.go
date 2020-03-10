@@ -32,13 +32,17 @@ func startup() error {
 	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
 	db, err := sqlx.Open("postgres", connectionString)
 	if err != nil {
-		return errors.Wrap(err, "Could not setup the db")
+		return errors.Wrap(err, "Could not connect to the db")
 	}
 	defer db.Close()
 	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
 	err = db.Ping()
 	if err != nil {
 		return err
+	}
+	err = setupDatabase(db)
+	if err != nil {
+		return errors.Wrap(err, "Could not setup the db")
 	}
 
 	server := &http.Server{
