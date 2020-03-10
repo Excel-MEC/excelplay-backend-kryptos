@@ -1,13 +1,13 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -30,8 +30,7 @@ func startup() error {
 
 	//setup the database
 	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
-	// db, err := sqlx.Connect("sqlite3", ":memory:")
-	db, err := sql.Open("postgres", connectionString)
+	db, err := sqlx.Open("postgres", connectionString)
 	if err != nil {
 		return errors.Wrap(err, "Could not setup the db")
 	}

@@ -3,7 +3,7 @@
 package main
 
 // PORT is the port on which the server would be run
-var PORT string = ":8000"
+var PORT string = ":8080"
 
 // Credentials to connect to Postgres database
 // TODO remove these
