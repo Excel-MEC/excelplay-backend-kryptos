@@ -13,7 +13,7 @@ func setupDatabase(db *sqlx.DB) error {
 		level_file varchar(1000)
 	);
 
-	create table if not exists levels (
+	create table if not exists hints (
 		id serial primary key,
 		number int references levels(number) not null,
 		content varchar(1000)
