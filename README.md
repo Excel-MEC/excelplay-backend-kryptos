@@ -17,4 +17,4 @@ To bring down all the containers and volumes that the command started, use
 `docker-compose down --remove-orphans --volumes`
 
 All environment variables needed for docker can be found in .env file in the project root.
-PGAdmin can be used to manipulate the database manually and is available on `localhost:5050` after running docker-compose. The login details can be found in the .env file and the IP of the postgres container that PGAdmin needs can be found by running `docker inspect <postgres container ip> | grep "IP"`.
+PGAdmin can be used to manipulate the database manually and is available on `localhost:5050` after running docker-compose. The login details can be found in the .env file and the IP of the postgres container that PGAdmin needs can be found by running `docker inspect <postgres container name> | grep "IP"`.
