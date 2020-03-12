@@ -20,7 +20,7 @@ func setupDatabase(db *sqlx.DB) error {
 	);
 	
 	create table if not exists leaderboard (
-		uid primary key,
+		uid int primary key,
 		name varchar(100) not null,
 		curr_level int references levels(number) not null,
 		rank int not null
