@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -23,6 +25,15 @@ func main() {
 func startup() error {
 	//setup logger
 	logger := logrus.New()
+	formatter := &logrus.TextFormatter{
+		TimestampFormat:        "02-01-2006 15:04:05", // the "time" field configuratiom
+		FullTimestamp:          true,
+		DisableLevelTruncation: true, // log level field configuration
+		CallerPrettyfier: func(f *runtime.Frame) (string, string) {
+			return "", fmt.Sprintf("%s:%d", formatFilePath(f.File), f.Line)
+		},
+	}
+	logger.SetFormatter(formatter)
 	logger.Out = os.Stdout
 
 	//setup router
@@ -59,4 +70,9 @@ func startup() error {
 		return errors.Wrap(err, "Could not start server on port "+PORT)
 	}
 	return nil
+}
+
+func formatFilePath(path string) string {
+	arr := strings.Split(path, "/")
+	return arr[len(arr)-1]
 }
