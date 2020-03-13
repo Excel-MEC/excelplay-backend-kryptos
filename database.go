@@ -27,7 +27,15 @@ func setupDatabase(db *sqlx.DB) error {
 		name varchar(100) not null,
 		curr_level int references levels(number) not null,
 		last_anstime timestamp
-	);`
+	);
+	
+	create table if not exists answer_logs (
+		id uuid references kuser(id),
+		name varchar(100),
+		attempt varchar(100),
+		time timestamp		
+	)
+	`
 
 	// execute a query on the server
 	_, err := db.Exec(schema)
