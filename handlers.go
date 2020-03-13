@@ -76,13 +76,60 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 }
 
 func (s *server) handleSubmission() http.HandlerFunc {
-	type response struct {
-		Question   string   `json:"question"`
-		ImageLevel bool     `json:"image_level"`
-		LevelFile  string   `json:"level_file"`
-		Hints      []string `json:"hints"`
+	type request struct {
+		Answer string `json:"answer"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
-		// do handling
+		requestLog := fmt.Sprintf("%s\t%s",
+			r.Method,
+			r.RequestURI,
+		)
+		logger := s.logger.WithField("request", requestLog)
+		logger.Infof("From: %s", r.RemoteAddr)
+
+		// replace when auth is ready
+		uuid := "c327ea2c-6539-11ea-8c85-0242ac190002"
+
+		// Expected POST format is { "answer": "attempt" }
+		input := json.NewDecoder(r.Body)
+		input.DisallowUnknownFields()
+
+		var req request
+		err := input.Decode(&req)
+		if err != nil {
+			logger.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		print(req.Answer)
+
+		var currLev int
+		err = s.db.Get(&currLev, "select curr_level from kuser where id = $1", uuid)
+		if err != nil {
+			logger.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		var correctAns string
+		err = s.db.Get(&correctAns, "select answer from levels where number = $1", currLev)
+		if err != nil {
+			logger.Errorf(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if req.Answer == correctAns {
+			_, err := s.db.Exec("update kuser set curr_level = curr_level + 1 where id = $1", uuid)
+			if err != nil {
+				logger.Errorf(err.Error())
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte("success"))
+		} else {
+			w.Write([]byte("fail"))
+		}
 	}
 }
