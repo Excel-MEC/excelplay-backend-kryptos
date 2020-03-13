@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func (s *server) handleAdmin(w http.ResponseWriter, r *http.Request) {
@@ -79,6 +80,10 @@ func (s *server) handleSubmission() http.HandlerFunc {
 	type request struct {
 		Answer string `json:"answer"`
 	}
+	type user struct {
+		Name      string `db:"name"`
+		CurrLevel int    `db:"curr_level"`
+	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestLog := fmt.Sprintf("%s\t%s",
 			r.Method,
@@ -101,18 +106,19 @@ func (s *server) handleSubmission() http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		print(req.Answer)
 
-		var currLev int
-		err = s.db.Get(&currLev, "select curr_level from kuser where id = $1", uuid)
+		var currUser user
+		err = s.db.Get(&currUser, "select name, curr_level from kuser where id = $1", uuid)
 		if err != nil {
 			logger.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
+		_, err = s.db.Exec("insert into answer_logs values($1, $2, $3, $4)", uuid, currUser.Name, req.Answer, time.Now())
+
 		var correctAns string
-		err = s.db.Get(&correctAns, "select answer from levels where number = $1", currLev)
+		err = s.db.Get(&correctAns, "select answer from levels where number = $1", currUser.CurrLevel)
 		if err != nil {
 			logger.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
