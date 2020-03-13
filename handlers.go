@@ -32,6 +32,7 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 			r.RequestURI,
 		)
 		logger := s.logger.WithField("request", requestLog)
+		logger.Infof("From: %s", r.RemoteAddr)
 
 		// replace when auth is ready
 		uuid := "c327ea2c-6539-11ea-8c85-0242ac190002"
