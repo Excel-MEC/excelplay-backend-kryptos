@@ -17,12 +17,14 @@ func (s *server) heartBeat(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) handleNextQuestion() http.HandlerFunc {
+	// Values that can be nil or a non-nullable value,
+	// such as a string are given the empty interface type
 	type response struct {
-		Number     int      `json:"number" db:"number"`
-		Question   string   `json:"question" db:"question"`
-		ImageLevel bool     `json:"image_level" db:"image_level"`
-		LevelFile  string   `json:"level_file" db:"level_file"`
-		Hints      []string `json:"hints"`
+		Number     int         `json:"number" db:"number"`
+		Question   interface{} `json:"question" db:"question"`
+		ImageLevel bool        `json:"image_level" db:"image_level"`
+		LevelFile  interface{} `json:"level_file" db:"level_file"`
+		Hints      []string    `json:"hints"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestLog := fmt.Sprintf("%s\t%s",
@@ -32,10 +34,10 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 		logger := s.logger.WithField("request", requestLog)
 
 		// replace when auth is ready
-		uid := 123
+		uuid := "c327ea2c-6539-11ea-8c85-0242ac190002"
 
 		var currLev int
-		err := s.db.Get(&currLev, "select curr_level from leaderboard where uid = $1", uid)
+		err := s.db.Get(&currLev, "select curr_level from kuser where id = $1", uuid)
 		if err != nil {
 			logger.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
@@ -43,7 +45,8 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 		}
 
 		var res response
-		err = s.db.Get(&res, "select * from levels where number = $1", currLev)
+		// Select all attributes except the answer
+		err = s.db.Get(&res, "select number, question, image_level, level_file from levels where number = $1", currLev)
 		if err != nil {
 			logger.Errorf(err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
