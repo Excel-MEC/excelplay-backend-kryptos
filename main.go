@@ -24,7 +24,6 @@ func main() {
 }
 func startup() error {
 	//setup logger
-	logger := logrus.New()
 	formatter := &logrus.TextFormatter{
 		TimestampFormat:        "02-01-2006 15:04:05", // the "time" field configuratiom
 		FullTimestamp:          true,
@@ -33,8 +32,8 @@ func startup() error {
 			return "", fmt.Sprintf("%s:%d", formatFilePath(f.File), f.Line)
 		},
 	}
-	logger.SetFormatter(formatter)
-	logger.Out = os.Stdout
+	logrus.SetFormatter(formatter)
+	logrus.SetOutput(os.Stdout)
 
 	//setup router
 	router := mux.NewRouter()
@@ -57,14 +56,14 @@ func startup() error {
 	}
 
 	server := &http.Server{
-		Handler:      newServer(router, db, logger),
+		Handler:      newServer(router, db),
 		Addr:         PORT,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
 	}
 
 	//start server
-	logger.Info("Server starting on port " + PORT)
+	logrus.Info("Server starting on port " + PORT)
 	err = server.ListenAndServe()
 	if err != nil && err != http.ErrServerClosed {
 		return errors.Wrap(err, "Could not start server on port "+PORT)
