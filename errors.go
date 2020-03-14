@@ -19,7 +19,7 @@ type httpHandler func(http.ResponseWriter, *http.Request) *httpError
 
 func (fn httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if e := fn(w, r); e != nil {
-		requestLog := fmt.Sprintf("%s/t%s/t%s",
+		requestLog := fmt.Sprintf("%s\t%s\t%s",
 			r.Method,
 			r.RequestURI,
 			r.RemoteAddr,
