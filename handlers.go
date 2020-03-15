@@ -12,12 +12,14 @@ func (s *server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 // heartBeat sends a response back, just to check if the server is up.
-func (s *server) heartBeat(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Test"))
+func (s *server) heartBeat() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Test"))
+	})
 }
 
-func (s *server) handleNextQuestion() http.HandlerFunc {
+func (s *server) handleNextQuestion() http.Handler {
 	// Values that can be nil or a non-nullable value,
 	// such as a string are given the empty interface type
 	type response struct {
@@ -27,7 +29,7 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 		LevelFile  interface{} `json:"level_file" db:"level_file"`
 		Hints      []string    `json:"hints"`
 	}
-	return func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestLog := fmt.Sprintf("%s\t%s",
 			r.Method,
 			r.RequestURI,
@@ -73,10 +75,10 @@ func (s *server) handleNextQuestion() http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonRes)
 		return
-	}
+	})
 }
 
-func (s *server) handleSubmission() http.HandlerFunc {
+func (s *server) handleSubmission() http.Handler {
 	type request struct {
 		Answer string `json:"answer"`
 	}
@@ -84,7 +86,7 @@ func (s *server) handleSubmission() http.HandlerFunc {
 		Name      string `db:"name"`
 		CurrLevel int    `db:"curr_level"`
 	}
-	return func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		requestLog := fmt.Sprintf("%s\t%s",
 			r.Method,
 			r.RequestURI,
@@ -137,5 +139,5 @@ func (s *server) handleSubmission() http.HandlerFunc {
 		} else {
 			w.Write([]byte("fail"))
 		}
-	}
+	})
 }
