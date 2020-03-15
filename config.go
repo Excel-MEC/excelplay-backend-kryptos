@@ -8,9 +8,10 @@ var PORT string = ":8080"
 // Credentials to connect to Postgres database
 // TODO remove these
 const (
-	HOST     = "db"
-	DBPORT   = 5432
-	USER     = "admin"
-	PASSWORD = "password"
-	DBNAME   = "db"
+	HOST      = "db"
+	DBPORT    = 5432
+	USER      = "admin"
+	PASSWORD  = "password"
+	DBNAME    = "db"
+	SECRETKEY = "supersecretkey"
 )
