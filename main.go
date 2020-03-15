@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -39,18 +38,7 @@ func startup() error {
 	router := mux.NewRouter()
 
 	//setup the database
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
-	db, err := sqlx.Open("postgres", connectionString)
-	if err != nil {
-		return errors.Wrap(err, "Could not connect to the db")
-	}
-	defer db.Close()
-	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
-	err = db.Ping()
-	if err != nil {
-		return err
-	}
-	err = setupDatabase(db)
+	db, err := setupDatabase()
 	if err != nil {
 		return errors.Wrap(err, "Could not setup the db")
 	}
