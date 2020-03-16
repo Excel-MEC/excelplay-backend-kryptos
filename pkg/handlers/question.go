@@ -7,6 +7,7 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
+	"github.com/dgrijalva/jwt-go"
 )
 
 // HandleNextQuestion handles any request made to the /api/question/ endpoint
@@ -21,11 +22,11 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 		Hints      []string    `json:"hints"`
 	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
-		// replace when auth is ready
-		uuid := "c327ea2c-6539-11ea-8c85-0242ac190002"
+		// Obtain values from JWT
+		props, _ := r.Context().Value("props").(jwt.MapClaims)
 
 		var currLev int
-		err := db.Get(&currLev, "select curr_level from kuser where id = $1", uuid)
+		err := db.Get(&currLev, "select curr_level from kuser where id = $1", props["sub"])
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
 		}
