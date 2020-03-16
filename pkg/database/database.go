@@ -14,7 +14,7 @@ type DB struct {
 }
 
 // NewDB setups and returns a new database connection instance
-func NewDB(config *env.Config) (*DB, error) {
+func NewDB(config *env.DBConfig) (*DB, error) {
 	schema := `create table if not exists levels (
 		number int not null primary key,
 		question varchar(1000),
