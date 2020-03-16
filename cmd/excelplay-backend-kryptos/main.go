@@ -38,20 +38,11 @@ func startup() error {
 	logrus.SetFormatter(formatter)
 	logrus.SetOutput(os.Stdout)
 
-	// read config
-	// replace hardcoding with read from config file when ready
-	config := &env.Config{
-		Host:      "db",
-		Dbport:    5432,
-		User:      "admin",
-		Password:  "password",
-		Dbname:    "db",
-		Secretkey: "supersecretkey",
-		Port:      ":8080",
-	}
+	// Read config
+	config := env.LoadConfig()
 
 	//setup the database
-	db, err := database.NewDB(config)
+	db, err := database.NewDB(config.DB)
 	if err != nil {
 		return errors.Wrap(err, "Could not setup the db")
 	}
