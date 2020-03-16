@@ -1,13 +1,20 @@
-package main
+package database
 
 import (
 	"fmt"
 
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-func setupDatabase() (*sqlx.DB, error) {
+// DB wraps sqlx.DB to add custom query methods
+type DB struct {
+	*sqlx.DB
+}
+
+// NewDB setups and returns a new database connection instance
+func NewDB(config *env.Config) (*DB, error) {
 	schema := `create table if not exists levels (
 		number int not null primary key,
 		question varchar(1000),
@@ -38,7 +45,14 @@ func setupDatabase() (*sqlx.DB, error) {
 		time timestamp		
 	)
 	`
-	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		config.Host,
+		config.Dbport,
+		config.User,
+		config.Password,
+		config.Dbname,
+	)
+
 	db, err := sqlx.Open("postgres", connectionString)
 	if err != nil {
 		return nil, errors.Wrap(err, "Could not connect to the db")
@@ -56,5 +70,5 @@ func setupDatabase() (*sqlx.DB, error) {
 		return nil, errors.Wrap(err, "Could not create schema")
 	}
 
-	return db, nil
+	return &DB{db}, nil
 }
