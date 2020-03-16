@@ -11,9 +11,12 @@ func (s *server) handleAdmin(w http.ResponseWriter, r *http.Request) {
 }
 
 // heartBeat sends a response back, just to check if the server is up.
-func (s *server) heartBeat(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Test"))
+func (s *server) heartBeat() httpHandler {
+	return func(w http.ResponseWriter, r *http.Request) *httpError {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("Test"))
+		return nil
+	}
 }
 
 func (s *server) handleNextQuestion() httpHandler {
