@@ -46,3 +46,7 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 		),
 	).Methods("POST")
 }
+
+// Note that ErrorsMiddleware must always be the outermost middleware as it handles errors from
+// all internal functions and is the only funcion in the chain that returns the http.Handler which
+// is expected by router.Handle in it's 2nd arg.
