@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
-func setupDatabase(db *sqlx.DB) error {
+func setupDatabase() (*sqlx.DB, error) {
 	schema := `create table if not exists levels (
 		number int not null primary key,
 		question varchar(1000),
@@ -36,12 +38,23 @@ func setupDatabase(db *sqlx.DB) error {
 		time timestamp		
 	)
 	`
-
-	// execute a query on the server
-	_, err := db.Exec(schema)
+	connectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", HOST, DBPORT, USER, PASSWORD, DBNAME)
+	db, err := sqlx.Open("postgres", connectionString)
 	if err != nil {
-		return errors.Wrap(err, "Could not create schema")
+		return nil, errors.Wrap(err, "Could not connect to the db")
+	}
+	defer db.Close()
+	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
+	err = db.Ping()
+	if err != nil {
+		return nil, errors.Wrap(err, "Could not ping the db to establish conection")
 	}
 
-	return nil
+	// execute a query on the server
+	_, err = db.Exec(schema)
+	if err != nil {
+		return nil, errors.Wrap(err, "Could not create schema")
+	}
+
+	return db, nil
 }
