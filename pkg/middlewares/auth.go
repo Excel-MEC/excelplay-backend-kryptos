@@ -42,7 +42,7 @@ func AuthMiddleware(next httperrors.Handler, config *env.Config) httperrors.Hand
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx := context.WithValue(r.Context(), "sdfsf", claims)
+			ctx := context.WithValue(r.Context(), KeyProps, claims)
 			// Access context values in handlers like this
 			// props, _ := r.Context().Value("props").(jwt.MapClaims)
 			if err := next(w, r.WithContext(ctx)); err != nil {
