@@ -27,9 +27,13 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
 
 		var currLev int
-		err := db.Get(&currLev, "select curr_level from kuser where id = $1", props["sub"])
+		err := db.GetCurrLevel(props["sub"].(string), &currLev)
 		if err != nil && err.Error() == "sql: no rows in result set" {
-			db.Exec("insert into kuser values($1,$2,$3)", props["sub"], props["name"], 1)
+			_, err := db.CreateNewUser(props["sub"].(string), props["name"].(string))
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Could not create new user", http.StatusInternalServerError}
+			}
+			db.GetCurrLevel(props["sub"].(string), &currLev)
 		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
 		}
