@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
@@ -12,34 +13,33 @@ import (
 
 // HandleNextQuestion handles any request made to the /api/question/ endpoint
 func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
-	// Values that can be nil or a non-nullable value,
-	// such as a string are given the empty interface type
-	type response struct {
-		Number     int         `json:"number" db:"number"`
-		Question   interface{} `json:"question" db:"question"`
-		ImageLevel bool        `json:"image_level" db:"image_level"`
-		LevelFile  interface{} `json:"level_file" db:"level_file"`
-		Hints      []string    `json:"hints"`
-	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
+		userID := props["sub"].(string)
+		name := props["name"].(string)
 
 		var currLev int
-		err := db.Get(&currLev, "select curr_level from kuser where id = $1", props["sub"])
-		if err != nil {
+		err := db.GetCurrLevel(userID, &currLev)
+		if err != nil && err.Error() == "sql: no rows in result set" {
+			_, err := db.CreateNewUser(userID, name)
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Could not create new user", http.StatusInternalServerError}
+			}
+			db.GetCurrLevel(userID, &currLev)
+		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
 		}
 
-		var res response
-		// Select all attributes except the answer
-		err = db.Get(&res, "select number, question, image_level, level_file from levels where number = $1", currLev)
+		var res database.QResponse
+		err = db.GetQuestion(currLev, &res)
 		if err != nil {
+			fmt.Println(err.Error())
 			return &httperrors.HTTPError{r, err, "Could not retrieve question details", http.StatusInternalServerError}
 		}
 
 		var hints []string
-		err = db.Select(&hints, "select content from hints where number = $1", currLev)
+		err = db.GetHints(currLev, &hints)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve hints", http.StatusInternalServerError}
 		}

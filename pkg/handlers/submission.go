@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-	"time"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
@@ -11,18 +10,15 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// HandleSubmission handles any answer submission made on the /api/submit/ endpoint
+// HandleSubmission handles answer attempts
 func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 	type request struct {
 		Answer string `json:"answer"`
 	}
-	type user struct {
-		Name      string `db:"name"`
-		CurrLevel int    `db:"curr_level"`
-	}
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
+		userID := props["sub"].(string)
 
 		// Expected POST format is { "answer": "attempt" }
 		input := json.NewDecoder(r.Body)
@@ -34,22 +30,22 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 			return &httperrors.HTTPError{r, err, "Could not deserialize json", http.StatusInternalServerError}
 		}
 
-		var currUser user
-		err = db.Get(&currUser, "select name, curr_level from kuser where id = $1", props["sub"])
+		var currUser database.User
+		err = db.GetUser(&currUser, userID)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve user", http.StatusInternalServerError}
 		}
 
-		_, err = db.Exec("insert into answer_logs values($1, $2, $3, $4)", props["sub"], currUser.Name, req.Answer, time.Now())
+		_, err = db.LogAnswerAttempt(userID, currUser, req.Answer)
 
 		var correctAns string
-		err = db.Get(&correctAns, "select answer from levels where number = $1", currUser.CurrLevel)
+		err = db.GetCorrectAns(currUser, &correctAns)
 		if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve the answer", http.StatusInternalServerError}
 		}
 
 		if req.Answer == correctAns {
-			_, err := db.Exec("update kuser set curr_level = curr_level + 1 where id = $1", props["sub"])
+			_, err := db.CorrectAnswerSubmitted(userID)
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not update user progress", http.StatusInternalServerError}
 			}
