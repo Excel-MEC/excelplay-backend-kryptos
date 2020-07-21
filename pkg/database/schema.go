@@ -19,7 +19,7 @@ create extension if not exists "uuid-ossp";
 create table if not exists kuser (
 id uuid primary key default uuid_generate_v1(),
 name varchar(100) not null,
-curr_level int references levels(number) not null,
+curr_level int not null,
 last_anstime timestamp
 );
 

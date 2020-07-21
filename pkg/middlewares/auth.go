@@ -13,14 +13,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-// Key is special type for keys used with context in auth middleware
-type Key int
-
-const (
-	// KeyProps is the context key used to access the JWT props
-	KeyProps Key = iota
-)
-
 // AuthMiddleware takes a httperrors.Handler and calls it if the JWT in the headers is valid
 func AuthMiddleware(next httperrors.Handler, config *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
@@ -42,7 +34,7 @@ func AuthMiddleware(next httperrors.Handler, config *env.Config) httperrors.Hand
 		}
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			ctx := context.WithValue(r.Context(), KeyProps, claims)
+			ctx := context.WithValue(r.Context(), "props", claims)
 			// Access context values in handlers like this
 			// props, _ := r.Context().Value("props").(jwt.MapClaims)
 			if err := next(w, r.WithContext(ctx)); err != nil {

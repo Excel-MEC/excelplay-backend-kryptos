@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
@@ -27,7 +28,9 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 
 		var currLev int
 		err := db.Get(&currLev, "select curr_level from kuser where id = $1", props["sub"])
-		if err != nil {
+		if err != nil && err.Error() == "sql: no rows in result set" {
+			db.Exec("insert into kuser values($1,$2,$3)", props["sub"], props["name"], 1)
+		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
 		}
 
@@ -35,6 +38,7 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 		// Select all attributes except the answer
 		err = db.Get(&res, "select number, question, image_level, level_file from levels where number = $1", currLev)
 		if err != nil {
+			fmt.Println(err.Error())
 			return &httperrors.HTTPError{r, err, "Could not retrieve question details", http.StatusInternalServerError}
 		}
 
