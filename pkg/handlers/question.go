@@ -16,15 +16,17 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
+		userID := props["sub"].(string)
+		name := props["name"].(string)
 
 		var currLev int
-		err := db.GetCurrLevel(props["sub"].(string), &currLev)
+		err := db.GetCurrLevel(userID, &currLev)
 		if err != nil && err.Error() == "sql: no rows in result set" {
-			_, err := db.CreateNewUser(props["sub"].(string), props["name"].(string))
+			_, err := db.CreateNewUser(userID, name)
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not create new user", http.StatusInternalServerError}
 			}
-			db.GetCurrLevel(props["sub"].(string), &currLev)
+			db.GetCurrLevel(userID, &currLev)
 		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
 		}
