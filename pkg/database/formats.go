@@ -2,8 +2,8 @@ package database
 
 // User holds the details of a particular user
 type User struct {
-	Name      string `db:"name"`
-	CurrLevel int    `db:"curr_level"`
+	Name      string `json:"name" db:"name"`
+	CurrLevel int    `json:"curr_level" db:"curr_level"`
 }
 
 // QResponse holds the response for a question request
