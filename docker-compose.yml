@@ -9,7 +9,7 @@ services:
       - 8080:8080
     restart: unless-stopped
     volumes:
-      - ./:/go/src/github.com/Excel-MEC/excelplay-backend-kryptos
+      - ./:/excelplay-backend-kryptos
     depends_on:
       - db
     networks:
