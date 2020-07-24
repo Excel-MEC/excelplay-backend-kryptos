@@ -7,7 +7,7 @@ services:
       dockerfile: dev.dockerfile
     ports:
       - 8080:8080
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - ./:/go/src/github.com/Excel-MEC/excelplay-backend-kryptos
     depends_on:
