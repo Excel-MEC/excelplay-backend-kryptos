@@ -6,6 +6,10 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
 // DB wraps sqlx.DB to add custom query methods
@@ -23,10 +27,22 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 		config.Dbname,
 	)
 
-	db, err := sqlx.Open("postgres", connectionString)
+	// Read migrations
+	m, err := migrate.New("file:///excelplay-backend-kryptos/pkg/database/migrations", "postgres://admin:password@db:5432/db?sslmode=disable")
 	if err != nil {
+		return nil, errors.Wrap(err, "Failed to read migrations or connect to db")
+	}
+	// The error happens when running m.Up()
+	// Run migrations
+	if err := m.Up(); err != nil {
+		return nil, errors.Wrap(err, "Failed to run migrations")
+	}
+
+	db, err := sqlx.Open("postgres", connectionString)
+	if err != nil || db == nil {
 		return nil, errors.Wrap(err, "Could not connect to the db")
 	}
+
 	// This step is needed because db.Open() simply validates the arguments, it does not open an actual connection to the db.
 	err = db.Ping()
 	if err != nil {
@@ -34,10 +50,10 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 	}
 
 	// execute a query on the server
-	_, err = db.Exec(schema)
-	if err != nil {
-		return nil, errors.Wrap(err, "Could not create schema")
-	}
+	// _, err = db.Exec(schema)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "Could not create schema")
+	// }
 
 	return &DB{db}, nil
 }
