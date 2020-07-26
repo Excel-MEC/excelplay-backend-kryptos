@@ -2,6 +2,8 @@ package database
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/jmoiron/sqlx"
@@ -28,13 +30,24 @@ func NewDB(config *env.DBConfig) (*DB, error) {
 	)
 
 	// Read migrations
-	m, err := migrate.New("file:///excelplay-backend-kryptos/pkg/database/migrations", "postgres://admin:password@db:5432/db?sslmode=disable")
+	m, err := migrate.New("file:///excelplay-backend-kryptos/pkg/database/migrations/", "postgres://admin:password@db:5432/db?sslmode=disable")
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to read migrations or connect to db")
 	}
+	var files []string
+	err = filepath.Walk("/excelplay-backend-kryptos/pkg/database/migrations", func(path string, info os.FileInfo, err error) error {
+		files = append(files, path)
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+	for _, file := range files {
+		fmt.Println(file)
+	}
 	// The error happens when running m.Up()
 	// Run migrations
-	if err := m.Up(); err != nil {
+	if err := m.Steps(10); err != nil {
 		return nil, errors.Wrap(err, "Failed to run migrations")
 	}
 

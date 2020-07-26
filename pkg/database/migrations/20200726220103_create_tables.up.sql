@@ -26,4 +26,4 @@ id uuid references kuser(id),
 name varchar(100),
 attempt varchar(100),
 time timestamp		
-);
+)

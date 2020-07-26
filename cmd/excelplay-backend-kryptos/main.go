@@ -43,10 +43,10 @@ func startup() error {
 
 	//setup the database
 	db, err := database.NewDB(config.DB)
-	defer db.Close()
 	if err != nil {
 		return errors.Wrap(err, "Could not setup the db")
 	}
+	defer db.Close()
 
 	//setup router
 	router := routes.NewRouter()
