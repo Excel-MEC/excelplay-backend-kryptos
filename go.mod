@@ -4,7 +4,6 @@ go 1.12
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/golang-migrate/migrate v3.5.4+incompatible
 	github.com/golang-migrate/migrate/v4 v4.11.0
 	github.com/gorilla/mux v1.7.4
 	github.com/jmoiron/sqlx v1.2.0
