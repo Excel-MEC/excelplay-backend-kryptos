@@ -18,7 +18,7 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["sub"].(string)
+		userID := props["user_id"].(int)
 
 		// Expected POST format is { "answer": "attempt" }
 		input := json.NewDecoder(r.Body)
