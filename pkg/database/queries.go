@@ -6,17 +6,17 @@ import (
 )
 
 // GetCurrLevel retuns the current level for the user with the given uuid.
-func (db *DB) GetCurrLevel(uuid string, currLev *int) error {
+func (db *DB) GetCurrLevel(uuid int, currLev *int) error {
 	return db.Get(currLev, "select curr_level from kuser where id = $1", uuid)
 }
 
 // CreateNewUser creates a new user, who starts at level 1.
-func (db *DB) CreateNewUser(uuid string, name string) (sql.Result, error) {
+func (db *DB) CreateNewUser(uuid int, name string) (sql.Result, error) {
 	return db.Exec("insert into kuser values($1,$2,$3)", uuid, name, 1)
 }
 
 // GetUser gets the details of a user
-func (db *DB) GetUser(currUser *User, uuid string) error {
+func (db *DB) GetUser(currUser *User, uuid int) error {
 	return db.Get(currUser, "select name, curr_level from kuser where id = $1", uuid)
 }
 
@@ -31,7 +31,7 @@ func (db *DB) GetHints(currLev int, hints *[]string) error {
 }
 
 // LogAnswerAttempt logs every answer attempt
-func (db *DB) LogAnswerAttempt(uuid string, currUser User, answer string) (sql.Result, error) {
+func (db *DB) LogAnswerAttempt(uuid int, currUser User, answer string) (sql.Result, error) {
 	return db.Exec("insert into answer_logs values($1, $2, $3, $4)", uuid, currUser.Name, answer, time.Now())
 }
 
@@ -41,7 +41,7 @@ func (db *DB) GetCorrectAns(currUser User, correctAns *string) error {
 }
 
 // CorrectAnswerSubmitted increments the user level on submission of correct answer
-func (db *DB) CorrectAnswerSubmitted(uuid string) (sql.Result, error) {
+func (db *DB) CorrectAnswerSubmitted(uuid int) (sql.Result, error) {
 	return db.Exec("update kuser set curr_level = curr_level + 1 where id = $1", uuid)
 }
 

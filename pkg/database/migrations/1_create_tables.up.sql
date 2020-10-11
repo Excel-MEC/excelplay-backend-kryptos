@@ -12,17 +12,15 @@ number int references levels(number) not null,
 content varchar(2000)
 );
 
-create extension if not exists "uuid-ossp";
-
 create table if not exists kuser (
-id uuid primary key default uuid_generate_v1(),
+id int primary key,
 name varchar(100) not null,
 curr_level int not null,
 last_anstime timestamp
 );
 
 create table if not exists answer_logs (
-id uuid references kuser(id),
+id int references kuser(id),
 name varchar(100),
 attempt varchar(100),
 time timestamp		

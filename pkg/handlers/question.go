@@ -16,7 +16,7 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["sub"].(string)
+		userID := props["user_id"].(int)
 		name := props["name"].(string)
 
 		var currLev int
