@@ -1,5 +1,11 @@
 package env
 
+import (
+	"strconv"
+
+	"github.com/joho/godotenv"
+)
+
 // DBConfig holds the env variables that are used to configure the DB
 type DBConfig struct {
 	Host     string
@@ -17,18 +23,21 @@ type Config struct {
 }
 
 // LoadConfig creates and returns a struct with config values
-func LoadConfig() *Config {
-	// TODO: Load configuration values from an external env file that is not checked into version control
-	// These hardcoded values are only for testing during development
-	return &Config{
-		Port:      ":8080",
-		Secretkey: "supersecretkey",
-		DB: &DBConfig{
-			Host:     "db",
-			Dbport:   5432,
-			User:     "admin",
-			Password: "password",
-			Dbname:   "db",
-		},
+func LoadConfig() (*Config, error) {
+	env, err := godotenv.Read()
+	if err != nil {
+		return nil, err
 	}
+	dbPort, _ := strconv.Atoi(env["DB_PORT"])
+	return &Config{
+		Port:      ":" + env["PORT"],
+		Secretkey: env["SECRET_KEY"],
+		DB: &DBConfig{
+			Host:     env["DB_NAME"],
+			Dbport:   dbPort,
+			User:     env["DB_USER"],
+			Password: env["DB_PASSWORD"],
+			Dbname:   env["DB_NAME"],
+		},
+	}, nil
 }

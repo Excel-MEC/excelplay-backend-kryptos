@@ -39,7 +39,10 @@ func startup() error {
 	logrus.SetOutput(os.Stdout)
 
 	// Read config
-	config := env.LoadConfig()
+	config, err := env.LoadConfig()
+	if err != nil {
+		return errors.Wrap(err, "Could not read env file")
+	}
 
 	//setup the database
 	db, err := database.NewDB(config.DB)
