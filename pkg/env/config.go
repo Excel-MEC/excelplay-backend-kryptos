@@ -33,7 +33,7 @@ func LoadConfig() (*Config, error) {
 		Port:      ":" + env["PORT"],
 		Secretkey: env["SECRET_KEY"],
 		DB: &DBConfig{
-			Host:     env["DB_NAME"],
+			Host:     env["DB_HOST"],
 			Dbport:   dbPort,
 			User:     env["DB_USER"],
 			Password: env["DB_PASSWORD"],
