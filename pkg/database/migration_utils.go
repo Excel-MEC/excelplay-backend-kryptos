@@ -32,7 +32,7 @@ type migration struct {
 // config is a pointer to an instance of DBParams, and is used to establish connection to the database.
 // driverName is the name of the driver to be passed to sql.Open()
 func Migrate(path string, config *DBParams, driverName string) error {
-	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=require",
 		config.host,
 		config.port,
 		config.user,
