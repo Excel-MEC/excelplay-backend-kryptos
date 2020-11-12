@@ -1,0 +1,36 @@
+info:
+  contact: {}
+  description: This is the swagger doc for the API for Excel Play Kryptos.
+  license:
+    name: Apache 2.0
+  title: Excel Play Kryptos API
+  version: "1.0"
+paths:
+  /api/ping:
+    get:
+      consumes:
+      - application/json
+      description: do ping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: pong
+          schema:
+            type: string
+        "400":
+          description: ok
+          schema:
+            type: string
+        "404":
+          description: ok
+          schema:
+            type: string
+        "500":
+          description: ok
+          schema:
+            type: string
+      summary: ping example
+      tags:
+      - example
+swagger: "2.0"
