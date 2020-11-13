@@ -29,38 +29,17 @@ var doc = `{
     "paths": {
         "/api/ping": {
             "get": {
-                "description": "do ping",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Sends \"Test\" back. Use this to check if the server is up.",
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
-                    "example"
+                    "Kryptos"
                 ],
-                "summary": "ping example",
+                "summary": "Server health check.",
                 "responses": {
                     "200": {
-                        "description": "pong",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "ok",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "ok",
+                        "description": "Server is up",
                         "schema": {
                             "type": "string"
                         }

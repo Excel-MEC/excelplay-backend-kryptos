@@ -8,29 +8,15 @@ info:
 paths:
   /api/ping:
     get:
-      consumes:
-      - application/json
-      description: do ping
+      description: Sends "Test" back. Use this to check if the server is up.
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
-          description: pong
+          description: Server is up
           schema:
             type: string
-        "400":
-          description: ok
-          schema:
-            type: string
-        "404":
-          description: ok
-          schema:
-            type: string
-        "500":
-          description: ok
-          schema:
-            type: string
-      summary: ping example
+      summary: Server health check.
       tags:
-      - example
+      - Kryptos
 swagger: "2.0"
