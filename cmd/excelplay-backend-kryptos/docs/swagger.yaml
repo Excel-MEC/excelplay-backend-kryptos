@@ -1,3 +1,13 @@
+definitions:
+  handlers.swag_user:
+    properties:
+      curr_level:
+        example: 18
+        type: integer
+      name:
+        example: Aswin G
+        type: string
+    type: object
 info:
   contact: {}
   description: This is the swagger doc for the API for Excel Play Kryptos.
@@ -6,6 +16,24 @@ info:
   title: Excel Play Kryptos API
   version: "1.0"
 paths:
+  /api/leaderboard:
+    get:
+      description: Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns the leaderboard
+          schema:
+            $ref: '#/definitions/handlers.swag_user'
+        "500":
+          description: Could not serialize json
+          schema:
+            type: string
+      summary: return leaderboard.
+      tags:
+      - Kryptos
+      - auth_required
   /api/ping:
     get:
       description: Sends "Test" back. Use this to check if the server is up.

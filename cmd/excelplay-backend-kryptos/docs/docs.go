@@ -27,6 +27,33 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/leaderboard": {
+            "get": {
+                "description": "Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kryptos",
+                    "auth_required"
+                ],
+                "summary": "return leaderboard.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the leaderboard",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swag_user"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not serialize json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/ping": {
             "get": {
                 "description": "Sends \"Test\" back. Use this to check if the server is up.",
@@ -44,6 +71,21 @@ var doc = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.swag_user": {
+            "type": "object",
+            "properties": {
+                "curr_level": {
+                    "type": "integer",
+                    "example": 18
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Aswin G"
                 }
             }
         }
