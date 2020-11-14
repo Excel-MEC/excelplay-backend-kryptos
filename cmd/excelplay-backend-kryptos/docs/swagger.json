@@ -1,0 +1,181 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the swagger doc for the API for Excel Play Kryptos.",
+        "title": "Excel Play Kryptos API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/leaderboard": {
+            "get": {
+                "description": "Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "return leaderboard.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the leaderboard",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swagUser"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not serialize json",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/ping": {
+            "get": {
+                "description": "Sends \"Test\" back. Use this to check if the server is up.",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "Server health check.",
+                "responses": {
+                    "200": {
+                        "description": "Server is up",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/question": {
+            "get": {
+                "description": "Sends back the question for the level the user is on. If this is a new user, a user instance is created in the DB and the first question is returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "returns the question for the level the user is on.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the question and it's details.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swagQresponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/submit": {
+            "post": {
+                "description": "takes a post request with the answer attempt.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "takes a post request with the answer attempt.",
+                "parameters": [
+                    {
+                        "description": "Answer format",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swagRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns 'success'",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Returns 'fail'",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.swagQresponse": {
+            "type": "object",
+            "properties": {
+                "hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "['Hint 1'",
+                        " 'Hint 2']"
+                    ]
+                },
+                "image_level": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "level_file": {
+                    "type": "string",
+                    "example": "url_of_image"
+                },
+                "number": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "question": {
+                    "type": "string",
+                    "example": "What is MEC's techfest?"
+                }
+            }
+        },
+        "handlers.swagRequest": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string",
+                    "example": "excel"
+                }
+            }
+        },
+        "handlers.swagUser": {
+            "type": "object",
+            "properties": {
+                "curr_level": {
+                    "type": "integer",
+                    "example": 18
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Aswin G"
+                }
+            }
+        }
+    }
+}

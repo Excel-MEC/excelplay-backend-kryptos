@@ -1,0 +1,120 @@
+definitions:
+  handlers.swagQresponse:
+    properties:
+      hints:
+        example:
+        - '[''Hint 1'''
+        - ' ''Hint 2'']'
+        items:
+          type: string
+        type: array
+      image_level:
+        example: true
+        type: boolean
+      level_file:
+        example: url_of_image
+        type: string
+      number:
+        example: 1
+        type: integer
+      question:
+        example: What is MEC's techfest?
+        type: string
+    type: object
+  handlers.swagRequest:
+    properties:
+      answer:
+        example: excel
+        type: string
+    type: object
+  handlers.swagUser:
+    properties:
+      curr_level:
+        example: 18
+        type: integer
+      name:
+        example: Aswin G
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is the swagger doc for the API for Excel Play Kryptos.
+  license:
+    name: Apache 2.0
+  title: Excel Play Kryptos API
+  version: "1.0"
+paths:
+  /api/leaderboard:
+    get:
+      description: Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns the leaderboard
+          schema:
+            $ref: '#/definitions/handlers.swagUser'
+        "500":
+          description: Could not serialize json
+          schema:
+            type: string
+      summary: return leaderboard.
+      tags:
+      - Kryptos
+  /api/ping:
+    get:
+      description: Sends "Test" back. Use this to check if the server is up.
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Server is up
+          schema:
+            type: string
+      summary: Server health check.
+      tags:
+      - Kryptos
+  /api/question:
+    get:
+      description: Sends back the question for the level the user is on. If this is a new user, a user instance is created in the DB and the first question is returned.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns the question and it's details.
+          schema:
+            $ref: '#/definitions/handlers.swagQresponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: returns the question for the level the user is on.
+      tags:
+      - Kryptos
+  /api/submit:
+    post:
+      consumes:
+      - application/json
+      description: takes a post request with the answer attempt.
+      parameters:
+      - description: Answer format
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.swagRequest'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Returns 'success'
+          schema:
+            type: string
+        "500":
+          description: Returns 'fail'
+          schema:
+            type: string
+      summary: takes a post request with the answer attempt.
+      tags:
+      - Kryptos
+swagger: "2.0"

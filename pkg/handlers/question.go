@@ -11,7 +11,23 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// Only for swagger documentation, do not use in code.
+type swagQresponse struct {
+	Number     int      `json:"number" example:"1"`
+	Question   string   `json:"question" example:"What is MEC's techfest?"`
+	ImageLevel bool     `json:"image_level" example:"true"`
+	LevelFile  string   `json:"level_file" example:"url_of_image"`
+	Hints      []string `json:"hints" example:"['Hint 1', 'Hint 2']"`
+}
+
 // HandleNextQuestion handles any request made to the /api/question/ endpoint
+// @Summary returns the question for the level the user is on.
+// @Description Sends back the question for the level the user is on. If this is a new user, a user instance is created in the DB and the first question is returned.
+// @Tags Kryptos
+// @Produce json
+// @Success 200 {object} swagQresponse "Returns the question and it's details."
+// @Failure 500 {string} string
+// @Router /api/question [get]
 func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT

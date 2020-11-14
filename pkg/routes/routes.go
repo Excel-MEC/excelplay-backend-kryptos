@@ -7,6 +7,9 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/middlewares"
 	"github.com/gorilla/mux"
+
+	"github.com/swaggo/http-swagger"
+	_ "github.com/Excel-MEC/excelplay-backend-kryptos/cmd/excelplay-backend-kryptos/docs" 
 )
 
 // Router wraps mux.Router to add route init method
@@ -23,7 +26,7 @@ func NewRouter() *Router {
 
 // Routes initializes the routes of the api
 func (router *Router) Routes(db *database.DB, config *env.Config) {
-	router.HandleFunc("/admin/", handlers.HandleAdmin).Methods("GET")
+	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 	router.Handle("/api/ping", middlewares.ErrorsMiddleware(httperrors.Handler(handlers.HeartBeat()))).Methods("GET")
 	router.Handle("/api/question",
 		middlewares.ErrorsMiddleware(
