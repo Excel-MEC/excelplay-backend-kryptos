@@ -1,4 +1,32 @@
 definitions:
+  handlers.swag_qresponse:
+    properties:
+      hints:
+        example:
+        - '[''Hint 1'''
+        - ' ''Hint 2'']'
+        items:
+          type: string
+        type: array
+      image_level:
+        example: true
+        type: boolean
+      level_file:
+        example: url_of_image
+        type: string
+      number:
+        example: 1
+        type: integer
+      question:
+        example: What is MEC's techfest?
+        type: string
+    type: object
+  handlers.swag_request:
+    properties:
+      answer:
+        example: excel
+        type: string
+    type: object
   handlers.swag_user:
     properties:
       curr_level:
@@ -33,7 +61,6 @@ paths:
       summary: return leaderboard.
       tags:
       - Kryptos
-      - auth_required
   /api/ping:
     get:
       description: Sends "Test" back. Use this to check if the server is up.
@@ -45,6 +72,49 @@ paths:
           schema:
             type: string
       summary: Server health check.
+      tags:
+      - Kryptos
+  /api/question:
+    get:
+      description: Sends back the question for the level the user is on. If this is a new user, a user instance is created in the DB and the first question is returned.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns the question and it's details.
+          schema:
+            $ref: '#/definitions/handlers.swag_qresponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: returns the question for the level the user is on.
+      tags:
+      - Kryptos
+  /api/submit:
+    post:
+      consumes:
+      - application/json
+      description: takes a post request with the answer attempt.
+      parameters:
+      - description: Answer format
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.swag_request'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Returns the question and it's details.
+          schema:
+            $ref: '#/definitions/handlers.swag_qresponse'
+        "500":
+          description: Returns 'success' if the answer was correct, 'fail' otherwise.
+          schema:
+            type: string
+      summary: takes a post request with the answer attempt.
       tags:
       - Kryptos
 swagger: "2.0"

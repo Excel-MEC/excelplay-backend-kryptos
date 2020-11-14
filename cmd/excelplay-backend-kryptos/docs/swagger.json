@@ -17,8 +17,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Kryptos",
-                    "auth_required"
+                    "Kryptos"
                 ],
                 "summary": "return leaderboard.",
                 "responses": {
@@ -56,9 +55,115 @@
                     }
                 }
             }
+        },
+        "/api/question": {
+            "get": {
+                "description": "Sends back the question for the level the user is on. If this is a new user, a user instance is created in the DB and the first question is returned.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "returns the question for the level the user is on.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the question and it's details.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swag_qresponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/submit": {
+            "post": {
+                "description": "takes a post request with the answer attempt.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "takes a post request with the answer attempt.",
+                "parameters": [
+                    {
+                        "description": "Answer format",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swag_request"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Returns the question and it's details.",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.swag_qresponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Returns 'success' if the answer was correct, 'fail' otherwise.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "handlers.swag_qresponse": {
+            "type": "object",
+            "properties": {
+                "hints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "['Hint 1'",
+                        " 'Hint 2']"
+                    ]
+                },
+                "image_level": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "level_file": {
+                    "type": "string",
+                    "example": "url_of_image"
+                },
+                "number": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "question": {
+                    "type": "string",
+                    "example": "What is MEC's techfest?"
+                }
+            }
+        },
+        "handlers.swag_request": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string",
+                    "example": "excel"
+                }
+            }
+        },
         "handlers.swag_user": {
             "type": "object",
             "properties": {

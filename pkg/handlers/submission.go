@@ -10,7 +10,21 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
+// Only for swagger documentation, do not use in code.
+type swag_request struct {
+	Answer string `json:"answer" example:"excel"`
+}
+
 // HandleSubmission handles answer attempts
+// @Summary takes a post request with the answer attempt.
+// @Description takes a post request with the answer attempt.
+// @Tags Kryptos
+// @Accept json
+// @Produce plain
+// @Param payload body swag_request true "Answer format"
+// @Success 200 {object} swag_qresponse "Returns the question and it's details."
+// @Failure 500 {string} string "Returns 'success' if the answer was correct, 'fail' otherwise."
+// @Router /api/submit [post]
 func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 	type request struct {
 		Answer string `json:"answer"`
