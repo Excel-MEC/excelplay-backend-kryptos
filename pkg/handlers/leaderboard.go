@@ -21,7 +21,7 @@ type swagUser struct {
 // @Description Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.
 // @Tags Kryptos
 // @Produce json
-// @Success 200 {object} swagUser "Returns the leaderboard"
+// @Success 200 {object} []swagUser "Returns the leaderboard"
 // @Failure 500 {string} string "Could not serialize json"
 // @Router /api/leaderboard [get]
 func GetLeaderboard(db *database.DB, config *env.Config) httperrors.Handler {

@@ -9,6 +9,7 @@
         },
         "version": "1.0"
     },
+    "basePath": "/kryptos",
     "paths": {
         "/api/leaderboard": {
             "get": {
@@ -108,13 +109,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns 'success'",
+                        "description": "Returns 'success' for correct answer, 'fail' for wrong answer.",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Returns 'fail'",
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }
@@ -176,6 +177,13 @@
                     "example": "Aswin G"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "JWT Authorization",
+            "in": "Authorization"
         }
     }
 }

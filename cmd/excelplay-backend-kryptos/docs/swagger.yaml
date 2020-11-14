@@ -1,3 +1,4 @@
+basePath: /kryptos
 definitions:
   handlers.swagQresponse:
     properties:
@@ -107,14 +108,19 @@ paths:
       - text/plain
       responses:
         "200":
-          description: Returns 'success'
+          description: Returns 'success' for correct answer, 'fail' for wrong answer.
           schema:
             type: string
         "500":
-          description: Returns 'fail'
+          description: Internal Server Error
           schema:
             type: string
       summary: takes a post request with the answer attempt.
       tags:
       - Kryptos
+securityDefinitions:
+  ApiKeyAuth:
+    in: Authorization
+    name: JWT Authorization
+    type: apiKey
 swagger: "2.0"
