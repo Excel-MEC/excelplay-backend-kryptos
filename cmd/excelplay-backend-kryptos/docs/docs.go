@@ -41,7 +41,7 @@ var doc = `{
                     "200": {
                         "description": "Returns the leaderboard",
                         "schema": {
-                            "$ref": "#/definitions/handlers.swag_user"
+                            "$ref": "#/definitions/handlers.swagUser"
                         }
                     },
                     "500": {
@@ -87,7 +87,7 @@ var doc = `{
                     "200": {
                         "description": "Returns the question and it's details.",
                         "schema": {
-                            "$ref": "#/definitions/handlers.swag_qresponse"
+                            "$ref": "#/definitions/handlers.swagQresponse"
                         }
                     },
                     "500": {
@@ -119,19 +119,19 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handlers.swag_request"
+                            "$ref": "#/definitions/handlers.swagRequest"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns the question and it's details.",
+                        "description": "Returns 'success'",
                         "schema": {
-                            "$ref": "#/definitions/handlers.swag_qresponse"
+                            "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Returns 'success' if the answer was correct, 'fail' otherwise.",
+                        "description": "Returns 'fail'",
                         "schema": {
                             "type": "string"
                         }
@@ -141,7 +141,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "handlers.swag_qresponse": {
+        "handlers.swagQresponse": {
             "type": "object",
             "properties": {
                 "hints": {
@@ -172,7 +172,7 @@ var doc = `{
                 }
             }
         },
-        "handlers.swag_request": {
+        "handlers.swagRequest": {
             "type": "object",
             "properties": {
                 "answer": {
@@ -181,7 +181,7 @@ var doc = `{
                 }
             }
         },
-        "handlers.swag_user": {
+        "handlers.swagUser": {
             "type": "object",
             "properties": {
                 "curr_level": {

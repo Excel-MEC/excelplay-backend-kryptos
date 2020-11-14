@@ -1,5 +1,5 @@
 definitions:
-  handlers.swag_qresponse:
+  handlers.swagQresponse:
     properties:
       hints:
         example:
@@ -21,13 +21,13 @@ definitions:
         example: What is MEC's techfest?
         type: string
     type: object
-  handlers.swag_request:
+  handlers.swagRequest:
     properties:
       answer:
         example: excel
         type: string
     type: object
-  handlers.swag_user:
+  handlers.swagUser:
     properties:
       curr_level:
         example: 18
@@ -53,7 +53,7 @@ paths:
         "200":
           description: Returns the leaderboard
           schema:
-            $ref: '#/definitions/handlers.swag_user'
+            $ref: '#/definitions/handlers.swagUser'
         "500":
           description: Could not serialize json
           schema:
@@ -83,7 +83,7 @@ paths:
         "200":
           description: Returns the question and it's details.
           schema:
-            $ref: '#/definitions/handlers.swag_qresponse'
+            $ref: '#/definitions/handlers.swagQresponse'
         "500":
           description: Internal Server Error
           schema:
@@ -102,16 +102,16 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/handlers.swag_request'
+          $ref: '#/definitions/handlers.swagRequest'
       produces:
       - text/plain
       responses:
         "200":
-          description: Returns the question and it's details.
+          description: Returns 'success'
           schema:
-            $ref: '#/definitions/handlers.swag_qresponse'
+            type: string
         "500":
-          description: Returns 'success' if the answer was correct, 'fail' otherwise.
+          description: Returns 'fail'
           schema:
             type: string
       summary: takes a post request with the answer attempt.

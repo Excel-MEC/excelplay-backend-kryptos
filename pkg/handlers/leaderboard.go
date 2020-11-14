@@ -10,7 +10,7 @@ import (
 )
 
 // Only for swagger documentation, do not use in code.
-type swag_user struct {
+type swagUser struct {
 	Name      string `json:"name" example:"Aswin G"`
 	CurrLevel int    `json:"curr_level" example:"18"`
 }
@@ -21,7 +21,7 @@ type swag_user struct {
 // @Description Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.
 // @Tags Kryptos
 // @Produce json
-// @Success 200 {object} swag_user "Returns the leaderboard"
+// @Success 200 {object} swagUser "Returns the leaderboard"
 // @Failure 500 {string} string "Could not serialize json"
 // @Router /api/leaderboard [get]
 func GetLeaderboard(db *database.DB, config *env.Config) httperrors.Handler {
