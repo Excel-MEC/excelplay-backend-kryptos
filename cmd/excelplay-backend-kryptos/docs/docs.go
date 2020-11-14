@@ -125,13 +125,13 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Returns 'success'",
+                        "description": "Returns 'success' for correct answer, 'fail' for wrong answer.",
                         "schema": {
                             "type": "string"
                         }
                     },
                     "500": {
-                        "description": "Returns 'fail'",
+                        "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
                         }
@@ -210,7 +210,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "",
-	BasePath:    "",
+	BasePath:    "/kryptos",
 	Schemes:     []string{},
 	Title:       "Excel Play Kryptos API",
 	Description: "This is the swagger doc for the API for Excel Play Kryptos.",
