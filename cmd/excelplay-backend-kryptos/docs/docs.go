@@ -194,6 +194,13 @@ var doc = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "JWT Authorization",
+            "in": "Authorization"
+        }
     }
 }`
 

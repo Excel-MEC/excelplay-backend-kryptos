@@ -23,6 +23,9 @@ import (
 // @description This is the swagger doc for the API for Excel Play Kryptos.
 // @license.name Apache 2.0
 // @BasePath /kryptos
+// @securityDefinitions.apikey ApiKeyAuth
+// @in Authorization
+// @name JWT Authorization
 
 func main() {
 	// if any error occurs during startup, log the error and exit with status 1

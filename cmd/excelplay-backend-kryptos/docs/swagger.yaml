@@ -118,4 +118,9 @@ paths:
       summary: takes a post request with the answer attempt.
       tags:
       - Kryptos
+securityDefinitions:
+  ApiKeyAuth:
+    in: Authorization
+    name: JWT Authorization
+    type: apiKey
 swagger: "2.0"
