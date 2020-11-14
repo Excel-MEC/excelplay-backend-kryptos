@@ -13,6 +13,7 @@ type DBConfig struct {
 	User     string
 	Password string
 	Dbname   string
+	SSLMode  string
 }
 
 // Config holds the env varibles that are used to configure the server
@@ -38,6 +39,7 @@ func LoadConfig() (*Config, error) {
 			User:     env["DB_USER"],
 			Password: env["DB_PASSWORD"],
 			Dbname:   env["DB_NAME"],
+			SSLMode:  env["SSLMODE"],
 		},
 	}, nil
 }
