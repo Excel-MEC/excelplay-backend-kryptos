@@ -66,12 +66,16 @@ func applyMigrations(db *sql.DB, m []migration) error {
 	for _, migration := range m {
 		fmt.Println("Applying " + migration.fname)
 		_, err := db.Exec(migration.content)
+		fmt.Println(migration.id)
+		fmt.Println("HEHEHEHEHEHEHHEHEHEHEHEHEHEHEHHEHE")
 		lastMigration = max(lastMigration, migration.id)
 		if err != nil {
 			return err
 		}
 	}
-	db.Exec("UPDATE meta_migration_data SET id = $1", lastMigration)
+	if lastMigration != 0 {
+		db.Exec("UPDATE meta_migration_data SET id = $1", lastMigration)
+	}
 	return nil
 }
 
