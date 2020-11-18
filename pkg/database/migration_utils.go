@@ -67,7 +67,6 @@ func applyMigrations(db *sql.DB, m []migration) error {
 		fmt.Println("Applying " + migration.fname)
 		_, err := db.Exec(migration.content)
 		fmt.Println(migration.id)
-		fmt.Println("HEHEHEHEHEHEHHEHEHEHEHEHEHEHEHHEHE")
 		lastMigration = max(lastMigration, migration.id)
 		if err != nil {
 			return err
