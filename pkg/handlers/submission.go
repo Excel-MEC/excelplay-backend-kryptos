@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
@@ -32,7 +33,7 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
-		userID := props["user_id"].(int)
+		userID, _ := strconv.Atoi(props["user_id"].(string))
 
 		// Expected POST format is { "answer": "attempt" }
 		input := json.NewDecoder(r.Body)
