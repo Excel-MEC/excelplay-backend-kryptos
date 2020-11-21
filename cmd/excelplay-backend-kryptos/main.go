@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
+	"github.com/rs/cors"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/routes"
@@ -65,7 +66,7 @@ func startup() error {
 	router.Routes(db, config)
 
 	server := &http.Server{
-		Handler:      router,
+		Handler:      cors.AllowAll().Handler(router),
 		Addr:         config.Port,
 		WriteTimeout: 20 * time.Second,
 		ReadTimeout:  20 * time.Second,
