@@ -48,5 +48,5 @@ func (db *DB) CorrectAnswerSubmitted(uuid int) (sql.Result, error) {
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
 func (db *DB) GetLeaderboard(users *[]User) error {
-	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime")
+	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime desc")
 }
