@@ -42,11 +42,11 @@ func (db *DB) GetCorrectAns(currUser User, correctAns *string) error {
 
 // CorrectAnswerSubmitted increments the user level on submission of correct answer
 func (db *DB) CorrectAnswerSubmitted(uuid int) (sql.Result, error) {
-	return db.Exec("update kuser set curr_level = curr_level + 1 where id = $1", uuid)
+	return db.Exec("update kuser set curr_level = curr_level + 1, last_anstime = CURRENT_TIMESTAMP where id = $1", uuid)
 }
 
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
 func (db *DB) GetLeaderboard(users *[]User) error {
-	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime")
+	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime desc")
 }
