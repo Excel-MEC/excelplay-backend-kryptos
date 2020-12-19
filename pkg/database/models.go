@@ -1,5 +1,9 @@
 package database
 
+import (
+	"time"
+)
+
 // User holds the details of a particular user
 type User struct {
 	Name      string `json:"name" db:"name"`
@@ -15,4 +19,11 @@ type QResponse struct {
 	ImageLevel bool        `json:"image_level" db:"image_level"`
 	LevelFile  interface{} `json:"level_file" db:"level_file"`
 	Hints      []string    `json:"hints"`
+}
+
+// LeaderboardEntry holds an entry in the in-memory leaderboard
+type LeaderboardEntry struct {
+	uid         int
+	currLevel   int
+	lastAnsTime time.Time
 }
