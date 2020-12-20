@@ -7,7 +7,6 @@ instances, such as a redis based leaderboard in a separate container.
 */
 
 import (
-	"fmt"
 	"sort"
 	"time"
 
@@ -41,6 +40,7 @@ func InitLiveLeaderboard(db *database.DB) {
 	NewUser = make(chan database.LeaderboardEntry)
 	UpdateUser = make(chan int)
 	FetchRank = make(chan int)
+	ReturnRank = make(chan int)
 	var leaderboard []database.LeaderboardEntry
 	go func() {
 		// Populate leaderboard from DB
@@ -55,15 +55,12 @@ func InitLiveLeaderboard(db *database.DB) {
 		for {
 			select {
 			case user := <-NewUser:
-				fmt.Println("Adding new user to leaderboard")
+				logrus.Info("Adding new user to leaderboard")
 				leaderboard = append(leaderboard, user)
 				sortLeaderboard(leaderboard)
-				for _, v := range leaderboard {
-					fmt.Println(v.CurrLevel)
-				}
 
 			case userID := <-UpdateUser:
-				fmt.Println("Updating leaderboard")
+				logrus.Info("Updating leaderboard")
 				for i := range leaderboard {
 					if leaderboard[i].Uid == userID {
 						leaderboard[i].CurrLevel++
@@ -72,22 +69,20 @@ func InitLiveLeaderboard(db *database.DB) {
 					}
 				}
 				sortLeaderboard(leaderboard)
-				for _, v := range leaderboard {
-					fmt.Println(v.CurrLevel)
-				}
 
 			case requestedUID := <-FetchRank:
-				fmt.Println("Fetching rank")
+				logrus.Info("Fetching rank")
 				uidFound := false
 				for i, v := range leaderboard {
 					if v.Uid == requestedUID {
-						fmt.Println(i + 1)
+						ReturnRank <- i + 1
 						uidFound = true
 						break
 					}
 				}
 				if !uidFound {
-					fmt.Println("invalid")
+					logrus.Info("Invalid User ID sent to in-memory leaderboard")
+					ReturnRank <- -1
 				}
 			}
 		}
