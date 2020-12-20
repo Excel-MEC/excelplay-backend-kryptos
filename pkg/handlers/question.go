@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/liveleaderboard"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
@@ -43,6 +46,8 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not create new user", http.StatusInternalServerError}
 			}
+			// Add the new user to the in-memory leaderboard
+			liveleaderboard.NewUser <- database.LeaderboardEntry{Uid: userID, CurrLevel: 1, LastAnsTime: time.Now()}
 			db.GetCurrLevel(userID, &currLev)
 		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}

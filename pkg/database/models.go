@@ -23,7 +23,7 @@ type QResponse struct {
 
 // LeaderboardEntry holds an entry in the in-memory leaderboard
 type LeaderboardEntry struct {
-	uid         int
-	currLevel   int
-	lastAnsTime time.Time
+	Uid         int       `db:"id"`
+	CurrLevel   int       `db:"curr_level"`
+	LastAnsTime time.Time `db:"last_anstime"`
 }

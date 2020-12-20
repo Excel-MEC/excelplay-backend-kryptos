@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/liveleaderboard"
+
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/rs/cors"
 
@@ -64,6 +66,9 @@ func startup() error {
 	//setup router
 	router := routes.NewRouter()
 	router.Routes(db, config)
+
+	// Start the in-memory leaderboard
+	liveleaderboard.InitLiveLeaderboard(db)
 
 	server := &http.Server{
 		Handler:      cors.AllowAll().Handler(router),
