@@ -45,6 +45,23 @@ info:
   title: Excel Play Kryptos API
   version: "1.0"
 paths:
+  /api/getrank:
+    get:
+      description: returns the rank of the user who made the request. Returns -1 for an invalid user ID.
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: Returns the rank of the user who made the request. Returns -1 for an invalid user ID.
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: returns the rank of the user who made the request.
+      tags:
+      - Kryptos
   /api/leaderboard:
     get:
       description: Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.
@@ -54,7 +71,9 @@ paths:
         "200":
           description: Returns the leaderboard
           schema:
-            $ref: '#/definitions/handlers.swagUser'
+            items:
+              $ref: '#/definitions/handlers.swagUser'
+            type: array
         "500":
           description: Could not serialize json
           schema:

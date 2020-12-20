@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/liveleaderboard"
+
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/env"
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/httperrors"
@@ -64,6 +66,8 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not update user progress", http.StatusInternalServerError}
 			}
+			// Send update to leaderboard
+			liveleaderboard.UpdateUser <- userID
 			w.WriteHeader(http.StatusOK)
 			w.Write([]byte("success"))
 			return nil

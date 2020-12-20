@@ -8,8 +8,8 @@ import (
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/middlewares"
 	"github.com/gorilla/mux"
 
-	"github.com/swaggo/http-swagger"
-	_ "github.com/Excel-MEC/excelplay-backend-kryptos/cmd/excelplay-backend-kryptos/docs" 
+	_ "github.com/Excel-MEC/excelplay-backend-kryptos/cmd/excelplay-backend-kryptos/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 // Router wraps mux.Router to add route init method
@@ -53,6 +53,16 @@ func (router *Router) Routes(db *database.DB, config *env.Config) {
 			httperrors.Handler(
 				middlewares.AuthMiddleware(
 					handlers.GetLeaderboard(db, config),
+					config,
+				),
+			),
+		),
+	).Methods("GET")
+	router.Handle("/api/getrank",
+		middlewares.ErrorsMiddleware(
+			httperrors.Handler(
+				middlewares.AuthMiddleware(
+					handlers.GetRank(db, config),
 					config,
 				),
 			),

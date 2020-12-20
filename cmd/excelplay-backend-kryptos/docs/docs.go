@@ -27,6 +27,32 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/getrank": {
+            "get": {
+                "description": "returns the rank of the user who made the request. Returns -1 for an invalid user ID.",
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "Kryptos"
+                ],
+                "summary": "returns the rank of the user who made the request.",
+                "responses": {
+                    "200": {
+                        "description": "Returns the rank of the user who made the request. Returns -1 for an invalid user ID.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/api/leaderboard": {
             "get": {
                 "description": "Sends back the leaderboard in descending order of level, and for users on the same level, in the ascending order of last successful submission time.",
@@ -41,7 +67,10 @@ var doc = `{
                     "200": {
                         "description": "Returns the leaderboard",
                         "schema": {
-                            "$ref": "#/definitions/handlers.swagUser"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.swagUser"
+                            }
                         }
                     },
                     "500": {
