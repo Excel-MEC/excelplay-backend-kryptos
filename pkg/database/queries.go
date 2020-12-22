@@ -48,10 +48,10 @@ func (db *DB) CorrectAnswerSubmitted(uuid int) (sql.Result, error) {
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
 func (db *DB) GetLeaderboard(users *[]User) error {
-	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime desc")
+	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime")
 }
 
 // GetLeaderboardData gets the data from the leaderboard to be used in the in-memory leaderboard
 func (db *DB) GetLeaderboardData(entries *[]LeaderboardEntry) error {
-	return db.Select(entries, "select id, curr_level, last_anstime from kuser order by curr_level desc, last_anstime desc")
+	return db.Select(entries, "select id, curr_level, last_anstime from kuser order by curr_level desc, last_anstime")
 }
