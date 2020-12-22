@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/strconst"
-
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/liveleaderboard"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
@@ -58,9 +56,13 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 
 		// Check if user has completed all levels
 		if currLev > env.LastLevel {
-			w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+			jsonRes, err := json.Marshal(map[string]int{"question": -1})
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			}
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte(strconst.GameOverMessage))
+			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+			w.Write(jsonRes)
 			return nil
 		}
 
