@@ -56,7 +56,7 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 
 		// Check if user has completed all levels
 		if currLev > env.LastLevel {
-			jsonRes, err := json.Marshal(map[string]int{"question": -1})
+			jsonRes, err := json.Marshal(map[string]int{"number": -1})
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
 			}
