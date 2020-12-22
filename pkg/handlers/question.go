@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/strconst"
+
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/liveleaderboard"
 
 	"github.com/Excel-MEC/excelplay-backend-kryptos/pkg/database"
@@ -52,6 +54,14 @@ func HandleNextQuestion(db *database.DB, env *env.Config) httperrors.Handler {
 			db.GetCurrLevel(userID, &currLev)
 		} else if err != nil {
 			return &httperrors.HTTPError{r, err, "Could not retrieve curr_level", http.StatusInternalServerError}
+		}
+
+		// Check if user has completed all levels
+		if currLev > env.LastLevel {
+			w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+			w.WriteHeader(http.StatusOK)
+			w.Write([]byte(strconst.GameOverMessage))
+			return nil
 		}
 
 		var res database.QResponse
