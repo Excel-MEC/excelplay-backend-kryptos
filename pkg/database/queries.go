@@ -11,13 +11,13 @@ func (db *DB) GetCurrLevel(uuid int, currLev *int) error {
 }
 
 // CreateNewUser creates a new user, who starts at level 1.
-func (db *DB) CreateNewUser(uuid int, name string) (sql.Result, error) {
-	return db.Exec("insert into kuser values($1,$2,$3,$4)", uuid, name, 1, time.Now())
+func (db *DB) CreateNewUser(uuid int, name, proPic string) (sql.Result, error) {
+	return db.Exec("insert into kuser values($1,$2,$3,$4,$5)", uuid, name, 1, time.Now(), proPic)
 }
 
 // GetUser gets the details of a user
 func (db *DB) GetUser(currUser *User, uuid int) error {
-	return db.Get(currUser, "select name, curr_level from kuser where id = $1", uuid)
+	return db.Get(currUser, "select name, curr_level, profile_pic from kuser where id = $1", uuid)
 }
 
 // GetQuestion gets details of a certain level
@@ -48,7 +48,7 @@ func (db *DB) CorrectAnswerSubmitted(uuid int) (sql.Result, error) {
 // GetLeaderboard gets the users list in the descending order of level,
 // and for users on the same level, in the ascending order of last submission time.
 func (db *DB) GetLeaderboard(users *[]User) error {
-	return db.Select(users, "select name, curr_level from kuser order by curr_level desc, last_anstime")
+	return db.Select(users, "select name, curr_level, profile_pic from kuser order by curr_level desc, last_anstime")
 }
 
 // GetLeaderboardData gets the data from the leaderboard to be used in the in-memory leaderboard

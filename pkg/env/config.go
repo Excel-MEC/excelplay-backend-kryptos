@@ -20,6 +20,7 @@ type DBConfig struct {
 type Config struct {
 	Port      string // The port at which the server runs
 	Secretkey string // The secret key for decoding JWT token
+	LastLevel int    // The last level of the game
 	DB        *DBConfig
 }
 
@@ -30,9 +31,11 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 	dbPort, _ := strconv.Atoi(env["DB_PORT"])
+	ll, _ := strconv.Atoi(env["LAST_LEVEL"])
 	return &Config{
 		Port:      ":" + env["PORT"],
 		Secretkey: env["SECRET_KEY"],
+		LastLevel: ll,
 		DB: &DBConfig{
 			Host:     env["DB_HOST"],
 			Dbport:   dbPort,

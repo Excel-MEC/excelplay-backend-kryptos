@@ -16,12 +16,13 @@ create table if not exists kuser (
 id int primary key,
 name varchar(100) not null,
 curr_level int not null,
-last_anstime timestamp
+last_anstime timestamp not null,
+profile_pic varchar(500)
 );
 
 create table if not exists answer_logs (
 id int references kuser(id),
 name varchar(100),
 attempt varchar(100),
-time timestamp		
+time timestamp not null
 )
