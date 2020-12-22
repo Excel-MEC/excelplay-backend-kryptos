@@ -68,12 +68,23 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 			}
 			// Send update to leaderboard
 			liveleaderboard.UpdateUser <- userID
+			jsonRes, err := json.Marshal(map[string]string{"answer": "correct"})
+			if err != nil {
+				return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+			}
 			w.WriteHeader(http.StatusOK)
-			w.Write([]byte("success"))
+			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+			w.Write(jsonRes)
 			return nil
 		}
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("fail"))
+
+		jsonRes, err := json.Marshal(map[string]string{"answer": "wrong"})
+		if err != nil {
+			return &httperrors.HTTPError{r, err, "Could not serialize json", http.StatusInternalServerError}
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.Write(jsonRes)
 		return nil
 	}
 }
