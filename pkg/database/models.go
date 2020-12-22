@@ -8,6 +8,7 @@ import (
 type User struct {
 	Name      string `json:"name" db:"name"`
 	CurrLevel int    `json:"curr_level" db:"curr_level"`
+	ProPic    string `json:"profile_pic" db:"profile_pic"`
 }
 
 // QResponse holds the response for a question request

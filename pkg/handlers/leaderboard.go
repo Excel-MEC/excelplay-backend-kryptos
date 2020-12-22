@@ -13,6 +13,7 @@ import (
 type swagUser struct {
 	Name      string `json:"name" example:"Aswin G"`
 	CurrLevel int    `json:"curr_level" example:"18"`
+	ProPic    string `json:"profile_pic" example:"https://youtu.be/dQw4w9WgXcQ"`
 }
 
 // GetLeaderboard returns all the users ordered in descending order of level,
