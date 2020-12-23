@@ -32,6 +32,11 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 	type request struct {
 		Answer string `json:"answer"`
 	}
+
+	// Used to prevent multiple submissions from the same user
+	// CAUTION: will not work if backend is scaled to multiple instances. In such cases,
+	// create a separate, common service for implementing this functionality.
+	pendingTransactions := make(map[int]bool)
 	return func(w http.ResponseWriter, r *http.Request) *httperrors.HTTPError {
 		// Obtain values from JWT
 		props, _ := r.Context().Value("props").(jwt.MapClaims)
@@ -61,8 +66,14 @@ func HandleSubmission(db *database.DB, env *env.Config) httperrors.Handler {
 			return &httperrors.HTTPError{r, err, "Could not retrieve the answer", http.StatusInternalServerError}
 		}
 
-		if req.Answer == correctAns {
+		// If the user has already submitted the correct answer to their current level,
+		// wait until their level has been incremented in the DB before allowing them to attempt again.
+		_, userTransactionPending := pendingTransactions[userID]
+		if req.Answer == correctAns && !userTransactionPending {
+			pendingTransactions[userID] = true
 			_, err := db.CorrectAnswerSubmitted(userID)
+			delete(pendingTransactions, userID)
+
 			if err != nil {
 				return &httperrors.HTTPError{r, err, "Could not update user progress", http.StatusInternalServerError}
 			}
